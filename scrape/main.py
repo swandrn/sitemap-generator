@@ -26,7 +26,7 @@ with sync_playwright() as p:
     anchors = page.query_selector_all('a')
     links = set()
     for anchor in anchors:
-        link = anchor.get_attribute('href')
+        link = anchor.evaluate('(a) => a.href')
         links.add(link)
     print(links)
     #add cookies before page close
