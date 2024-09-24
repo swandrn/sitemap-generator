@@ -86,9 +86,6 @@ with sync_playwright() as p:
                         sitemap[nested_link] = link
             visited_links.add(link)
         
-        # for d in sitemap:
-        #     for key in d:
-        #         links.add(key)
         links.update(get_all_keys(sitemap))
 
     print(json.dumps(sitemap, indent=3))
