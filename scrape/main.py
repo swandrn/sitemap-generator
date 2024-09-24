@@ -20,6 +20,7 @@ with sync_playwright() as p:
         locale=user_profile['headers']['locale'],
         accept_downloads=False,
     )
+    browser.add_cookies(user_profile['cookies'])
     page = browser.new_page()
     page.goto('https://www.scrapethissite.com/')
     anchors = page.query_selector_all('a')
@@ -28,3 +29,8 @@ with sync_playwright() as p:
         link = anchor.get_attribute('href')
         links.add(link)
     print(links)
+    #add cookies before page close
+    cookies = browser.cookies()
+    user_profile['cookies'] = cookies
+    with open(paths.PROFILE_1, 'w') as profile:
+        json.dump(user_profile, profile, indent=3)
