@@ -8,21 +8,6 @@ import json
 from urllib.parse import urlparse
 import tldextract
 
-class Link:
-    def __init__(self, name: str, parent: str | None, children: list[str] | None) -> None:
-        self.name = name
-        self.parent = parent
-        self.children = children
-
-    def getname(self) -> str:
-        return self.name
-
-    def getparent(self) -> str | None:
-        return self.parent
-    
-    def getchildren(self) -> list[str] | None:
-        return self.children
-
 def get_all_keys(dictionary: dict):
     for key, value in dictionary.items():
         yield key
@@ -92,8 +77,7 @@ with sync_playwright() as p:
         if link in list(get_all_keys(sitemap)):
             continue
         nested_links = visit_page(page=page, url=link, domain=domain)
-        l = Link(name=link, parent=None, children=nested_links)
-        sitemap[l.getname()] = l.getchildren()
+        sitemap[link] = None
         if nested_links:
             if link in nested_links:
                 nested_links.discard(link)
