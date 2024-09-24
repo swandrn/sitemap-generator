@@ -66,7 +66,7 @@ with sync_playwright() as p:
 
     links = set()
     visited_links = set()
-    sitemap = {}
+    sitemap = {homepage_url: None}
 
     links.update(get_all_links_to_domain(page, domain))
 
@@ -75,18 +75,23 @@ with sync_playwright() as p:
             if link in visited_links:
                 continue
             nested_links = visit_page(page=page, url=link, domain=domain)
-            sitemap[link] = None
             if nested_links:
+                if sorted(nested_links) in sorted(links):
+                    visited_links.add(link)
+                    continue
                 if link in nested_links:
                     nested_links.discard(link)
-                sitemap[link] = dict.fromkeys(nested_links, None)
+                for nested_link in nested_links:
+                    if not nested_link in sitemap:
+                        sitemap[nested_link] = link
             visited_links.add(link)
-            
+        
+        # for d in sitemap:
+        #     for key in d:
+        #         links.add(key)
         links.update(get_all_keys(sitemap))
 
     print(json.dumps(sitemap, indent=3))
-    print(sorted(links))
-    print(sorted(visited_links))
         
     # Add cookies before page close
     cookies = browser.cookies()
