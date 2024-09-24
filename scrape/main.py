@@ -70,21 +70,19 @@ with sync_playwright() as p:
 
     links.update(get_all_links_to_domain(page, domain))
 
-    parent_links = links
-
-    # while visited_links != links:
-    for link in sorted(links):
-        if link in list(get_all_keys(sitemap)):
-            continue
-        nested_links = visit_page(page=page, url=link, domain=domain)
-        sitemap[link] = None
-        if nested_links:
-            if link in nested_links:
-                nested_links.discard(link)
-            sitemap[link] = dict.fromkeys(nested_links, None)
-        visited_links.add(link)
-        
-    links.update(get_all_keys(sitemap))
+    while visited_links != links:
+        for link in sorted(links):
+            if link in visited_links:
+                continue
+            nested_links = visit_page(page=page, url=link, domain=domain)
+            sitemap[link] = None
+            if nested_links:
+                if link in nested_links:
+                    nested_links.discard(link)
+                sitemap[link] = dict.fromkeys(nested_links, None)
+            visited_links.add(link)
+            
+        links.update(get_all_keys(sitemap))
 
     print(json.dumps(sitemap, indent=3))
     print(sorted(links))
