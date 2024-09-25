@@ -8,6 +8,30 @@ import json
 from urllib.parse import urlparse
 import tldextract
 
+def create_directory_structure(sitemap: dict) -> list:
+    dirs_list = []
+    tmp_list = []
+
+    for k, v in sitemap.items():
+        # Root of sitemap
+        if v == None:
+            tmp_list.append((k))
+            dirs_list.append(tmp_list)
+            tmp_list = []
+            continue
+        if not tmp_list:
+            tmp_list.append((k, v))
+            continue
+        if tmp_list[0][1] == v:
+            tmp_list.append((k, v))
+        else:
+            dirs_list.append(tmp_list)
+            tmp_list = []
+            tmp_list.append((k, v))
+    dirs_list.append(tmp_list)
+
+    return dirs_list
+
 def get_all_keys(dictionary: dict):
     for key, value in dictionary.items():
         yield key
@@ -56,8 +80,8 @@ with sync_playwright() as p:
     browser.add_cookies(user_profile['cookies'])
 
     page = browser.new_page()
-    homepage_url = 'https://www.scrapethissite.com/'
-    # homepage_url = 'https://www.barstoolsports.com/'
+    # homepage_url = 'https://www.scrapethissite.com/'
+    homepage_url = 'https://quotes.toscrape.com/'
     # Extract domain name without subdomain and suffix
     domain = tldextract.extract(homepage_url).domain
     # if not domain:
@@ -90,6 +114,10 @@ with sync_playwright() as p:
 
     print(json.dumps(sitemap, indent=3))
         
+    dirs_list = create_directory_structure(sitemap)
+    for dir in dirs_list:
+        print(dir)
+
     # Add cookies before page close
     cookies = browser.cookies()
     user_profile['cookies'] = cookies
