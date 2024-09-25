@@ -86,7 +86,7 @@ with sync_playwright() as p:
     domain = tldextract.extract(homepage_url).domain
     # if not domain:
     #     # Raise some type of 'domain can't be determined' Exception
-    page.goto(homepage_url)
+    page.goto(homepage_url, referer='https://duckduckgo.com/')
 
     links = set()
     visited_links = set()
