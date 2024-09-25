@@ -2,8 +2,9 @@ import os
 import sys
 sys.path.append(os.getcwd())
 from utilities import paths
+from utilities import delays
 from playwright.sync_api import sync_playwright
-from playwright.sync_api import BrowserContext, Page
+from playwright.sync_api import BrowserContext, Page, ElementHandle, JSHandle
 import json
 from urllib.parse import urlparse
 import tldextract
@@ -52,11 +53,12 @@ def get_all_links_to_domain(page: Page, domain: str) -> set:
             links.add(link)
     return links
 
-def visit_page(page: Page, url: str, domain: str) -> set:
+def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
     try:
-        page.goto(url)
+        referer = sitemap[url] if sitemap[url] != None else 'https://duckduckgo.com/'
+        page.goto(url=url, referer=referer)
     except Exception as e:
-        print(f'error going to {url}: {e}')
+        print(f'error going to {url} from {page.url}: {e}')
     try:
         links = get_all_links_to_domain(page, domain)
     except Exception as e:
@@ -80,25 +82,25 @@ with sync_playwright() as p:
     browser.add_cookies(user_profile['cookies'])
 
     page = browser.new_page()
-    # homepage_url = 'https://www.scrapethissite.com/'
-    homepage_url = 'https://quotes.toscrape.com/'
+    homepage_url = 'https://www.scrapethissite.com/'
+    # homepage_url = 'https://quotes.toscrape.com/'
     # Extract domain name without subdomain and suffix
     domain = tldextract.extract(homepage_url).domain
     # if not domain:
     #     # Raise some type of 'domain can't be determined' Exception
     page.goto(homepage_url, referer='https://duckduckgo.com/')
 
-    links = set()
+    links = set([homepage_url])
     visited_links = set()
     sitemap = {homepage_url: None}
 
     links.update(get_all_links_to_domain(page, domain))
 
     while visited_links != links:
-        for link in sorted(links):
+        for link in links:
             if link in visited_links:
                 continue
-            nested_links = visit_page(page=page, url=link, domain=domain)
+            nested_links = visit_page(page=page, url=link, sitemap=sitemap, domain=domain)
             if nested_links:
                 if sorted(nested_links) in sorted(links):
                     visited_links.add(link)
