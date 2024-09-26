@@ -126,5 +126,3 @@ def run_scraper(homepage_url: str) -> None:
         user_profile['cookies'] = cookies
         with open(paths.PROFILE_1, 'w') as profile:
             json.dump(user_profile, profile, indent=3)
-
-run_scraper(homepage_url='https://www.scrapethissite.com/')
