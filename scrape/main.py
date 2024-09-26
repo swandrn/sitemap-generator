@@ -65,63 +65,64 @@ def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
         print(f'error gathering links at {url}: {e}')
     return links
 
-user_profile = {}
+def run_scraper(homepage_url: str) -> None:
+    user_profile = {}
 
-with open(paths.PROFILE_1) as profile:
-    user_profile = json.load(profile)
+    with open(paths.PROFILE_1) as profile:
+        user_profile = json.load(profile)
 
-with sync_playwright() as p:
-    browser: BrowserContext = p.firefox.launch_persistent_context(
-        user_data_dir='',
-        headless=False,
-        screen=user_profile['headers']['screenSize'],
-        user_agent=user_profile['headers']['userAgent'],
-        locale=user_profile['headers']['locale'],
-        accept_downloads=False,
-    )
-    browser.add_cookies(user_profile['cookies'])
+    with sync_playwright() as p:
+        browser: BrowserContext = p.firefox.launch_persistent_context(
+            user_data_dir='',
+            headless=False,
+            screen=user_profile['headers']['screenSize'],
+            user_agent=user_profile['headers']['userAgent'],
+            locale=user_profile['headers']['locale'],
+            accept_downloads=False,
+        )
+        browser.add_cookies(user_profile['cookies'])
 
-    page = browser.new_page()
-    homepage_url = 'https://www.scrapethissite.com/'
-    # homepage_url = 'https://quotes.toscrape.com/'
-    # Extract domain name without subdomain and suffix
-    domain = tldextract.extract(homepage_url).domain
-    # if not domain:
-    #     # Raise some type of 'domain can't be determined' Exception
-    page.goto(homepage_url, referer='https://duckduckgo.com/')
+        page = browser.new_page()
+        # Extract domain name without subdomain and suffix
+        domain = tldextract.extract(homepage_url).domain
+        # if not domain:
+        #     # Raise some type of 'domain can't be determined' Exception
+        page.goto(homepage_url, referer='https://duckduckgo.com/')
 
-    links = set([homepage_url])
-    visited_links = set()
-    sitemap = {homepage_url: None}
+        links = set([homepage_url])
+        visited_links = set()
+        sitemap = {homepage_url: None}
 
-    links.update(get_all_links_to_domain(page, domain))
+        links.update(get_all_links_to_domain(page, domain))
 
-    while visited_links != links:
-        for link in links:
-            if link in visited_links:
-                continue
-            nested_links = visit_page(page=page, url=link, sitemap=sitemap, domain=domain)
-            if nested_links:
-                if sorted(nested_links) in sorted(links):
-                    visited_links.add(link)
+        while visited_links != links:
+            for link in links:
+                if link in visited_links:
                     continue
-                if link in nested_links:
-                    nested_links.discard(link)
-                for nested_link in nested_links:
-                    if not nested_link in sitemap:
-                        sitemap[nested_link] = link
-            visited_links.add(link)
-        
-        links.update(get_all_keys(sitemap))
+                nested_links = visit_page(page=page, url=link, sitemap=sitemap, domain=domain)
+                if nested_links:
+                    if sorted(nested_links) in sorted(links):
+                        visited_links.add(link)
+                        continue
+                    if link in nested_links:
+                        nested_links.discard(link)
+                    for nested_link in nested_links:
+                        if not nested_link in sitemap:
+                            sitemap[nested_link] = link
+                visited_links.add(link)
+            
+            links.update(get_all_keys(sitemap))
 
-    print(json.dumps(sitemap, indent=3))
-        
-    dirs_list = create_directory_structure(sitemap)
-    for dir in dirs_list:
-        print(dir)
+        print(json.dumps(sitemap, indent=3))
+            
+        dirs_list = create_directory_structure(sitemap)
+        for dir in dirs_list:
+            print(dir)
 
-    # Add cookies before page close
-    cookies = browser.cookies()
-    user_profile['cookies'] = cookies
-    with open(paths.PROFILE_1, 'w') as profile:
-        json.dump(user_profile, profile, indent=3)
+        # Add cookies before page close
+        cookies = browser.cookies()
+        user_profile['cookies'] = cookies
+        with open(paths.PROFILE_1, 'w') as profile:
+            json.dump(user_profile, profile, indent=3)
+
+run_scraper(homepage_url='https://www.scrapethissite.com/')
