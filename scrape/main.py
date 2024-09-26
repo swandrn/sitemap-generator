@@ -2,9 +2,8 @@ import os
 import sys
 sys.path.append(os.getcwd())
 from utilities import paths
-from utilities import delays
 from playwright.sync_api import sync_playwright
-from playwright.sync_api import BrowserContext, Page, ElementHandle, JSHandle
+from playwright.sync_api import BrowserContext, Page
 import json
 from urllib.parse import urlparse
 import tldextract
@@ -34,12 +33,14 @@ def create_directory_structure(sitemap: dict) -> list:
     return dirs_list
 
 def get_all_keys(dictionary: dict):
+    '''Get all keys of a given dictionary object'''
     for key, value in dictionary.items():
         yield key
         if isinstance(value, dict):
             yield from get_all_keys(value)
 
 def get_all_links_to_domain(page: Page, domain: str) -> set:
+    '''From the current page, create a Set of all links pointing to a page with a given domain main'''
     links = set()
     anchors = page.query_selector_all('a')
     for anchor in anchors:
@@ -54,6 +55,7 @@ def get_all_links_to_domain(page: Page, domain: str) -> set:
     return links
 
 def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
+    '''Visit a page using the parent page, according to the sitemap variable, as referer'''
     try:
         referer = sitemap[url] if sitemap[url] != None else 'https://duckduckgo.com/'
         page.goto(url=url, referer=referer)
