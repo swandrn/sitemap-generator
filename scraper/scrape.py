@@ -67,7 +67,7 @@ def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
         print(f'error gathering links at {url}: {e}')
     return links
 
-def run_scraper(homepage_url: str) -> None:
+def run_scraper(homepage_url: str) -> dict:
     user_profile = {}
 
     with open(paths.PROFILE_1) as profile:
@@ -115,14 +115,10 @@ def run_scraper(homepage_url: str) -> None:
             
             links.update(get_all_keys(sitemap))
 
-        print(json.dumps(sitemap, indent=3))
-            
-        dirs_list = create_directory_structure(sitemap)
-        for dir in dirs_list:
-            print(dir)
-
         # Add cookies before page close
         cookies = browser.cookies()
         user_profile['cookies'] = cookies
         with open(paths.PROFILE_1, 'w') as profile:
             json.dump(user_profile, profile, indent=3)
+        
+        return sitemap
