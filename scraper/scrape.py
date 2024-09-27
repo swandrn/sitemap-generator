@@ -67,7 +67,7 @@ def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
         print(f'error gathering links at {url}: {e}')
     return links
 
-def run_scraper(homepage_url: str) -> dict:
+def run_scraper(homepage_url: str, domain: str) -> dict:
     user_profile = {}
 
     with open(paths.PROFILE_1) as profile:
@@ -85,10 +85,6 @@ def run_scraper(homepage_url: str) -> dict:
         browser.add_cookies(user_profile['cookies'])
 
         page = browser.new_page()
-        # Extract domain name without subdomain and suffix
-        domain = tldextract.extract(homepage_url).domain
-        # if not domain:
-        #     # Raise some type of 'domain can't be determined' Exception
         page.goto(homepage_url, referer='https://duckduckgo.com/')
 
         links = set([homepage_url])
