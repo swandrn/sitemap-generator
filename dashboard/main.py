@@ -1,26 +1,28 @@
 import os
 import sys
 sys.path.append(os.getcwd())
-import pandas as pd
 from scraper import scrape
 from storage import database
 import tldextract
 import time
+import json
 
 homepage_url = 'https://www.scrapethissite.com/'
 domain = tldextract.extract(homepage_url).domain
 
-# If homepage_url exists in database and is not older than 24h:
+Session = database.create_session('sitemap')
+session = Session()
+
+timestamp = database.get_timestamp(session, url=homepage_url)
+current_time = int(time.time())
+
+if timestamp and current_time - timestamp < 86400: # If url was scraped within the last 24 hours (86400 seconds)
     # Query sitemap from database
-# Else run scraper:
+    sitemap = database.get_sitemap(session=session, homepage_url=homepage_url)
+    print(json.dumps(sitemap, indent=3))
+else:
+    sitemap = scrape.run_scraper(homepage_url=homepage_url, domain=domain)
 
-sitemap = scrape.run_scraper(homepage_url=homepage_url, domain=domain)
-
-landing_page_info = {
-    'domain_name': [domain],
-    'page_url': [homepage_url],
-    'last_scraped': [int(time.time())]
-}
-
-database.nested_dict_to_df(dictionary=landing_page_info, db_name='sitemap', table_name='landing_pages')
-database.flat_dict_to_sql(dictionary=sitemap, db_name='sitemap', table_name='pages_of_domain')
+    database.insert_landing_page(session=session, homepage_url=homepage_url, domain=domain, last_scraped=int(time.time()))
+    database.insert_pages_of_domain(session=session, sitemap=sitemap)
+    print(json.dumps(sitemap, indent=3))
