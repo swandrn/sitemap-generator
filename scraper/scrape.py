@@ -6,7 +6,6 @@ from playwright.sync_api import sync_playwright
 from playwright.sync_api import BrowserContext, Page
 import json
 from urllib.parse import urlparse
-import tldextract
 
 def create_directory_structure(sitemap: dict) -> list:
     dirs_list = []
