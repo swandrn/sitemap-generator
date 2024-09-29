@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import func
 
 Base = declarative_base()
 
@@ -44,8 +45,8 @@ def insert_landing_page(session, homepage_url: str, domain: str, last_scraped: i
     session.commit()
 
 def get_landing_page_id(session, url: str) -> int | None:
-    query = session.query(LandingPages.page_id).filter_by(page_url=url)
-    landing_page_id = session.execute(query).scalar_one()
+    query = session.query(func.max(LandingPages.page_id)).filter_by(page_url=url)
+    landing_page_id = session.execute(query).scalar_one_or_none()
     return landing_page_id
 
 def insert_pages_of_domain(session, sitemap: dict) -> None:
@@ -60,8 +61,11 @@ def insert_pages_of_domain(session, sitemap: dict) -> None:
     session.add_all(objects)
     session.commit()
 
-def get_timestamp(session, url: str) -> int | None:
-    query = session.query(LandingPages.last_scraped).filter_by(page_url=url)
+def get_latest_timestamp(session, url: str) -> int | None:
+    landing_page_id = get_landing_page_id(session=session, url=url)
+    if not landing_page_id:
+        return None
+    query = session.query(LandingPages.last_scraped).filter_by(page_id=landing_page_id)
     last_scraped = session.execute(query).scalar_one_or_none()
     return last_scraped
         
