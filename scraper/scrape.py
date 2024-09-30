@@ -98,9 +98,6 @@ def run_scraper(homepage_url: str, domain: str) -> dict:
                     continue
                 nested_links = visit_page(page=page, url=link, sitemap=sitemap, domain=domain)
                 if nested_links:
-                    if sorted(nested_links) in sorted(links):
-                        visited_links.add(link)
-                        continue
                     if link in nested_links:
                         nested_links.discard(link)
                     for nested_link in nested_links:
