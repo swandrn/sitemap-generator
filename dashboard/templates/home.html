@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap Generator</title>
+</head>
+<body>
+    <h1>{{ header }}</h1>
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('serve_homepage')}}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form action="{{ url_for('generate_sitemap') }}" method="get">
+            <label for="url-input">Generate sitemap from URL:</label>
+            <input type="text" name="url" id="url-input" placeholder="https://example.com">
+            <input type="submit" value="Generate Sitemap">
+        </form>
+    </main>
+</body>
+</html>
