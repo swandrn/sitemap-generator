@@ -7,9 +7,14 @@ import tldextract
 import time
 from flask import Flask
 from flask import request
+from flask import render_template
 from urllib.parse import unquote
 
 app = Flask(__name__)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('not_found.html'), 404
 
 @app.get('/generate/sitemap')
 def generate_sitemap():
@@ -29,6 +34,10 @@ def generate_sitemap():
         sitemap = scrape.run_scraper(homepage_url=url, domain=domain)
         database.insert_landing_page(session=session, homepage_url=url, domain=domain, last_scraped=int(time.time()))
         database.insert_pages_of_domain(session=session, sitemap=sitemap)
-    return sitemap
+    return render_template('generate.html', sitemap=sitemap, domain=domain)
+
+@app.get('/home')
+def serve_homepage():
+    return render_template('home.html', header='My Header')
 
 app.run(host='localhost', port=8080)
