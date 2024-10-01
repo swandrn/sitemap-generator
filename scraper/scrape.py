@@ -56,10 +56,10 @@ def get_all_links_to_domain(page: Page, domain: str) -> set:
 def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
     '''Visit a page using the parent page, according to the sitemap variable, as referer'''
     try:
-        referer = sitemap[url] if sitemap[url] != None else 'https://duckduckgo.com/'
+        referer = 'https://duckduckgo.com/' if sitemap[url] is None else sitemap[url]
         page.goto(url=url, referer=referer)
     except Exception as e:
-        print(f'error going to {url} from {page.url}: {e}')
+        print(f'error going to {url} from {referer}: {e}')
     try:
         links = get_all_links_to_domain(page, domain)
     except Exception as e:
