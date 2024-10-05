@@ -10,7 +10,7 @@ function sitemapToArr(sitemap){
         res.push([
             {
                 'v': key,
-                'f': formattedKey,
+                'f': `<div class="node"><a href="${key}">${formattedKey}</a></div>`,
             },
             sitemap[key]
         ])
