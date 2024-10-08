@@ -3,6 +3,7 @@ import sys
 sys.path.append(os.getcwd())
 from scraper import scrape
 from storage import database
+from utilities import env
 import tldextract
 import time
 from flask import Flask
@@ -11,6 +12,12 @@ from flask import render_template
 from urllib.parse import unquote
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{env.SQLITE_DB_NAME}.db'
+db = database.db
+db.init_app(app=app)
+
+with app.app_context():
+    db.create_all()
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -22,8 +29,7 @@ def generate_sitemap():
     url = unquote(request.args.get('url'))
     domain = tldextract.extract(url).domain
 
-    Session = database.create_session('sitemap')
-    session = Session()
+    session = db.session
 
     timestamp = database.get_latest_timestamp(session, url=url)
     current_time = int(time.time())
