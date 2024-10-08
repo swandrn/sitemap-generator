@@ -53,7 +53,7 @@ def get_all_links_to_domain(page: Page, domain: str) -> set:
             links.add(link)
     return links
 
-def visit_page(page: Page, url: str, sitemap: dict, domain: str) -> set:
+def visit_page(page: Page, url: str, sitemap: dict[str: str | None], domain: str) -> set:
     '''Visit a page using the parent page, according to the sitemap variable, as referer'''
     referer = 'https://duckduckgo.com/' if sitemap[url] is None else sitemap[url]
     try:
@@ -84,13 +84,10 @@ def run_scraper(homepage_url: str, domain: str) -> dict:
         browser.add_cookies(user_profile['cookies'])
 
         page = browser.new_page()
-        page.goto(homepage_url, referer='https://duckduckgo.com/')
 
         links = set([homepage_url])
         visited_links = set()
         sitemap = {homepage_url: None}
-
-        links.update(get_all_links_to_domain(page, domain))
 
         while visited_links != links:
             for link in links:
