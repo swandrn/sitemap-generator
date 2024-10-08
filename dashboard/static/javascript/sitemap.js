@@ -2,7 +2,14 @@ const viewSitemap = document.querySelector('#view-sitemap')
 google.charts.load('current', {packages:["orgchart"]});
 google.charts.setOnLoadCallback(drawChart);
 
+/**
+ * Iterate over an Object and create an array of the key value pair.
+ * Returns an array of arrays
+ * @param {object} sitemap 
+ * @returns {Array<Array<object>>}
+ */
 function sitemapToArr(sitemap){
+    console.log(sitemap)
     let res = []
     for(let key in sitemap){
         sitemap[key] = sitemap[key] == null ? "" : sitemap[key]
@@ -10,7 +17,7 @@ function sitemapToArr(sitemap){
         res.push([
             {
                 'v': key,
-                'f': `<div class="node"><a href="${key}">${formattedKey}</a></div>`,
+                'f': `<a href="${key}">${formattedKey}</a>`,
             },
             sitemap[key]
         ])
@@ -20,7 +27,6 @@ function sitemapToArr(sitemap){
 
 function drawChart(){
     let chartData = sitemapToArr(JSON.parse(sitemapAsJson))
-    console.log(chartData)
     let data = new google.visualization.DataTable()
     data.addColumn('string', 'Page')
     data.addColumn('string', 'Referer')
@@ -32,5 +38,8 @@ function drawChart(){
     chart.draw(data, {
         'allowCollapse': true,
         'allowHtml': true,
+        'compactRows': true,
+        'nodeClass': 'node',
+        'selectedNodeClass': 'node-selected',
     })
 }
