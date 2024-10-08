@@ -18,6 +18,8 @@
         <form action="{{ url_for('generate_sitemap') }}" method="get">
             <label for="url-input">Generate sitemap from URL:</label>
             <input type="text" name="url" id="url-input" placeholder="https://example.com">
+            <label for="subdomain-radio">Limit crawling to current subdomain:</label>
+            <input type="radio" name="subdomain_only" id="subdomain-radio" value="true">
             <input type="submit" value="Generate Sitemap">
         </form>
     </main>
