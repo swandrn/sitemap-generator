@@ -1,40 +1,29 @@
 import os
 import sys
 sys.path.append(os.getcwd())
-from sqlalchemy import create_engine
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import func
 
-Base = declarative_base()
+db = SQLAlchemy()
 
-class LandingPages(Base):
+class LandingPages(db.Model):
     __tablename__ = 'landing_pages'
-    page_id = Column(Integer, primary_key=True, autoincrement=True)
-    page_url = Column(String(1000), nullable=False)
-    domain_name = Column(String(60), nullable=False)
-    last_scraped = Column(Integer, nullable=False)
+    page_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    page_url = db.Column(db.String(1000), nullable=False)
+    domain_name = db.Column(db.String(60), nullable=False)
+    last_scraped = db.Column(db.Integer, nullable=False)
 
-    pages_of_domain = relationship('PagesOfDomain', back_populates='landing_pages')
+    pages_of_domain = db.relationship('PagesOfDomain', back_populates='landing_pages')
 
-class PagesOfDomain(Base):
+class PagesOfDomain(db.Model):
     __tablename__ = 'pages_of_domain'
-    page_id = Column(Integer, primary_key=True, autoincrement=True)
-    landing_page_id = Column(Integer, ForeignKey(LandingPages.page_id), nullable=False)
-    page_url = Column(String(1000), nullable=False)
-    parent_url = Column(String(1000), nullable=True)
+    page_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    landing_page_id = db.Column(db.Integer, db.ForeignKey(LandingPages.page_id), nullable=False)
+    page_url = db.Column(db.String(1000), nullable=False)
+    parent_url = db.Column(db.String(1000), nullable=True)
 
-    landing_pages = relationship('LandingPages', back_populates='pages_of_domain', lazy='joined')
-
-def create_session(db_name: str) -> sessionmaker:
-    engine = create_engine(f'sqlite:///{db_name}.db')
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(engine)
-
-    return Session
+    landing_pages = db.relationship('LandingPages', back_populates='pages_of_domain', lazy='joined')
 
 def insert_landing_page(session, homepage_url: str, domain: str, last_scraped: int):
     lp = LandingPages()
