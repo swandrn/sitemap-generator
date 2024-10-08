@@ -5,6 +5,7 @@ from scraper import scrape
 from storage import database
 from utilities import env
 import tldextract
+from urllib.parse import urlparse
 import time
 from flask import Flask
 from flask import request
@@ -27,7 +28,10 @@ def page_not_found(e):
 def generate_sitemap():
     # 'https://www.scrapethissite.com/'
     url = unquote(request.args.get('url'))
-    domain = tldextract.extract(url).domain
+    subdomain_only = request.args.get('subdomain_only', default=False, type=bool)
+    print(subdomain_only)
+    
+    domain = tldextract.extract(url).domain if subdomain_only else urlparse(url).hostname
 
     session = db.session
 
