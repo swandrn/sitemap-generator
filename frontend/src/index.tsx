@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {Sitemap} from './App';
+import {Sitemap} from './components/Sitemap/Sitemap';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(

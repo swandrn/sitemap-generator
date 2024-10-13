@@ -1,6 +1,6 @@
 import { Chart } from "react-google-charts";
 import { useState, useEffect } from "react";
-import './App.css';
+import './Sitemap.css';
 
 function sitemapToArr(sitemap: any) {
   let res = []
