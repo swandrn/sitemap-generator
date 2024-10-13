@@ -1,15 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {Sitemap} from './components/Sitemap/Sitemap';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Sitemap } from './components/Sitemap/Sitemap';
+import { Homepage } from './components/Homepage/Homepage';
 import reportWebVitals from './reportWebVitals';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Homepage />
+  },
+  {
+    path: "/generate/sitemap",
+    element: <Sitemap />
+  },
+])
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Sitemap />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 

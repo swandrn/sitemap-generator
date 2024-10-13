@@ -1,5 +1,6 @@
 import { Chart } from "react-google-charts";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import './Sitemap.css';
 
 function sitemapToArr(sitemap: any) {
@@ -21,9 +22,14 @@ function sitemapToArr(sitemap: any) {
 function Sitemap() {
   const [sitemap, setSitemap] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  let [searchParams, setSearchparams] = useSearchParams();
   useEffect(() => {
     if(isLoading){
-      fetch('http://localhost:8080/generate/sitemap?url=https%3A%2F%2Fwww.scrapethissite.com%2F', {
+      let queryUrl: string = 'http://localhost:8080/generate/sitemap?';
+      searchParams.forEach((value, key) => {
+        queryUrl = queryUrl.concat(`${key}=${value}`);
+      });
+      fetch(queryUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
