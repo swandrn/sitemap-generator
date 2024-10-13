@@ -1,3 +1,11 @@
+/* Chart */
+#view-sitemap{
+    width: 70vw;
+    height: 70vh;
+    overflow: hidden;
+}
+
+/* Nodes */
 .node{
     background-color: rgb(83, 86, 91);
     border-radius: 6px;
