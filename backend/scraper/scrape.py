@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append(os.getcwd())
-from utilities import paths
+from backend.utilities import paths
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import BrowserContext, Page
 import json

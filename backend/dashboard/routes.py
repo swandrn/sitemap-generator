@@ -1,9 +1,9 @@
 import os
 import sys
 sys.path.append(os.getcwd())
-from scraper import scrape
-from storage import database
-from utilities import env
+from backend.scraper import scrape
+from backend.storage import database
+from backend.utilities import env
 import tldextract
 from urllib.parse import urlparse
 import time
