@@ -1,0 +1,31 @@
+/* Chart */
+#view-sitemap{
+  width: 70vw;
+  height: 70vh;
+  overflow: hidden;
+}
+
+/* Nodes */
+.node{
+  background-color: rgb(83, 86, 91);
+  border-radius: 6px;
+  padding: .2rem .4rem !important;
+}
+
+.node:hover{
+  background-color: rgb(111, 116, 126);
+}
+
+.node:active{
+  background-color: rgb(68, 58, 58);
+}
+
+.node a{
+  color: white;
+  text-decoration: none;
+}
+
+
+.node-selected{
+  background-color: rgb(68, 58, 58);
+}

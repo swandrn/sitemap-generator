@@ -1,0 +1,73 @@
+import { Chart } from "react-google-charts";
+import { useState, useEffect } from "react";
+import './App.css';
+
+function sitemapToArr(sitemap: any) {
+  let res = []
+  for (let key in sitemap) {
+    sitemap[key] = sitemap[key] == null ? "" : sitemap[key]
+    let formattedKey = new URL(key).pathname
+    res.push([
+      {
+        'v': key,
+        'f': `<a href="${key}">${formattedKey}</a>`,
+      },
+      sitemap[key]
+    ])
+  }
+  return res
+}
+
+function Sitemap() {
+  const [sitemap, setSitemap] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  useEffect(() => {
+    if(isLoading){
+      fetch('http://localhost:8080/generate/sitemap?url=https%3A%2F%2Fwww.scrapethissite.com%2F', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if(response.ok){
+            return response.json()
+          }
+          throw response;
+        })
+        .then(response => setSitemap(response))
+        .catch(error => console.log(error))
+        .finally(() => {
+          setLoading(false);
+        }) 
+    }
+  }, [])
+
+  if(isLoading){
+    return (
+      <p>Loading...</p>      
+    );
+  }
+
+  const chartData = sitemapToArr(sitemap)
+
+  const options = {
+    'allowCollapse': true,
+    'allowHtml': true,
+    'compactRows': true,
+    'nodeClass': 'node',
+    'selectedNodeClass': 'node-selected',
+  }
+
+  return (
+    <Chart
+      chartType="OrgChart"
+      data={chartData}
+      options={options}
+      width="100%"
+      height="100%"
+    />
+  );
+}
+
+export { Sitemap }

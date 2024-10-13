@@ -8,14 +8,18 @@ import tldextract
 from urllib.parse import urlparse
 import time
 from flask import Flask
+from flask_cors import CORS
 from flask import request
 from flask import render_template
+from flask import jsonify
 from urllib.parse import unquote
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{env.SQLITE_DB_NAME}.db'
 db = database.db
 db.init_app(app=app)
+cors = CORS()
+cors.init_app(app=app)
 
 with app.app_context():
     db.create_all()
@@ -29,7 +33,6 @@ def generate_sitemap():
     # 'https://www.scrapethissite.com/'
     url = unquote(request.args.get('url'))
     subdomain_only = request.args.get('subdomain_only', default=False, type=bool)
-    print(subdomain_only)
     
     domain = tldextract.extract(url).domain if subdomain_only else urlparse(url).hostname
 
@@ -44,7 +47,7 @@ def generate_sitemap():
         sitemap = scrape.run_scraper(homepage_url=url, domain=domain)
         database.insert_landing_page(session=session, homepage_url=url, domain=domain, last_scraped=int(time.time()))
         database.insert_pages_of_domain(session=session, sitemap=sitemap)
-    return render_template('generate.html', sitemap=sitemap, domain=domain)
+    return jsonify(sitemap)
 
 @app.get('/home')
 def serve_homepage():
