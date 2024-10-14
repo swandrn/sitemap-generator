@@ -7,11 +7,12 @@ from backend.utilities import env
 import tldextract
 from urllib.parse import urlparse
 import time
+import json
 from flask import Flask
 from flask_cors import CORS
 from flask import request
-from flask import render_template
 from flask import jsonify
+from flask import abort
 from urllib.parse import unquote
 
 app = Flask(__name__)
@@ -26,12 +27,16 @@ with app.app_context():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('not_found.html'), 404
+    err_msg = {'error': e.description}
+    return err_msg, 404
 
 @app.get('/generate/sitemap')
 def generate_sitemap():
     # 'https://www.scrapethissite.com/'
-    url = unquote(request.args.get('url'))
+    url_arg = request.args.get('url')
+    if not url_arg:
+        abort(404, 'Parameter url is missing')
+    url = unquote(url_arg)
     subdomain_only = request.args.get('subdomain_only', default=False, type=bool)
     
     domain = tldextract.extract(url).domain if subdomain_only else urlparse(url).hostname
@@ -48,9 +53,5 @@ def generate_sitemap():
         database.insert_landing_page(session=session, homepage_url=url, domain=domain, last_scraped=int(time.time()))
         database.insert_pages_of_domain(session=session, sitemap=sitemap)
     return jsonify(sitemap)
-
-@app.get('/home')
-def serve_homepage():
-    return render_template('home.html', header='My Header')
 
 app.run(host='localhost', port=8080)
