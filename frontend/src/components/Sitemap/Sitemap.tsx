@@ -22,7 +22,7 @@ function sitemapToArr(sitemap: any) {
 function Sitemap() {
   const [sitemap, setSitemap] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  let [searchParams, setSearchparams] = useSearchParams();
+  let [searchParams, _] = useSearchParams();
   useEffect(() => {
     if(isLoading){
       let queryUrl: string = 'http://localhost:8080/generate/sitemap?';
