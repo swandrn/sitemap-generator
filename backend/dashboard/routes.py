@@ -14,6 +14,7 @@ from flask import request
 from flask import jsonify
 from flask import abort
 from urllib.parse import unquote
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{env.SQLITE_DB_NAME}.db'
@@ -25,9 +26,20 @@ cors.init_app(app=app)
 with app.app_context():
     db.create_all()
 
+@app.errorhandler(HTTPException)
+def default_handler(e):
+    err_msg = {
+        'error': e.description,
+        'code': e.code,
+    }
+    return err_msg, e.code
+
 @app.errorhandler(404)
 def page_not_found(e):
-    err_msg = {'error': e.description}
+    err_msg = {
+        'error': e.description,
+        'code': e.code,
+        }
     return err_msg, 404
 
 @app.get('/generate/sitemap')
