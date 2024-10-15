@@ -7,7 +7,8 @@ from backend.utilities import env
 import tldextract
 from urllib.parse import urlparse
 import time
-import json
+import requests
+from requests.exceptions import HTTPError, ConnectionError, Timeout
 from flask import Flask
 from flask_cors import CORS
 from flask import request
@@ -49,6 +50,14 @@ def generate_sitemap():
     if not url_arg:
         abort(404, 'Parameter url is missing')
     url = unquote(url_arg)
+    try:
+        if requests.head(url).status_code > 399:
+            abort(502, 'The url points to a website that does not exist')
+    except (HTTPError, ConnectionError):
+        abort(502, 'The url points to a website that does not exist')
+    except Timeout:
+        abort(504, 'The url points to a website that timed out')
+
     subdomain_only = request.args.get('subdomain_only', default=False, type=bool)
     
     domain = tldextract.extract(url).domain if subdomain_only else urlparse(url).hostname
