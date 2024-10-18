@@ -15,12 +15,12 @@
 .title{
     padding: .1rem;
     margin: 0 .4rem 0 0;
-    background-color: rgb(75, 60, 51);
+    background-color: #FFDB58;
 }
 
 .navbar a{
     background-color: rgb(75, 60, 51);
-    color: white;
+    color: #FAF3DD;
     padding: .3rem .4rem;
     text-decoration: none;
 }

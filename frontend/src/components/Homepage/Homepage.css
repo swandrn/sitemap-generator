@@ -1,6 +1,6 @@
 .text-input {
     background-color: rgb(75, 60, 51);
-    color: white;
+    color: #FAF3DD;
     box-sizing: border-box;
     border: 1px solid white;
     outline: none;
@@ -17,7 +17,7 @@
 
 .button {
     background-color: rgb(75, 60, 51);
-    color: white;
+    color: #FAF3DD;
     border: none;
     text-decoration: none;
     text-align: center;
@@ -49,11 +49,12 @@
 
 .control__indicator {
     position: absolute;
-    top: 2px;
-    left: 0;
+    top: .1rem;
+    left: .05rem;
     height: 1.2rem;
     width: 1.2rem;
     background: #e6e6e6;
+    outline: 1px solid black;
 }
 
 .control:hover input~.control__indicator,
