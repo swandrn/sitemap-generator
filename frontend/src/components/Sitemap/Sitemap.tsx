@@ -3,8 +3,13 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import './Sitemap.css';
 
-function sitemapToArr(sitemap: any) {
-  let res = []
+interface Node{
+  NodeId: {value: string, format: string}
+  ParentId: string
+}
+
+function sitemapToArr(sitemap: any): Node[][] {
+  let res: Node[][] = []
   for (let key in sitemap) {
     sitemap[key] = sitemap[key] == null ? "" : sitemap[key]
     let formattedKey = new URL(key).pathname
@@ -55,7 +60,7 @@ function Sitemap() {
     );
   }
 
-  const chartData = sitemapToArr(sitemap)
+  const chartData: Node[][] = sitemapToArr(sitemap)
 
   const options = {
     'allowCollapse': true,
