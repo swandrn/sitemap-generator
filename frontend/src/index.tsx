@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Sitemap } from './components/Sitemap/Sitemap';
 import { Homepage } from './components/Homepage/Homepage';
+import { Sitemap } from './components/Sitemap/Sitemap';
 import reportWebVitals from './reportWebVitals';
+import { Navbar } from './components/Navbar/Navbar';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <Navbar />
     <RouterProvider router={router} />
   </React.StrictMode>
 );
