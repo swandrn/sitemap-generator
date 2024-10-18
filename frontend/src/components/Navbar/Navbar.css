@@ -1,14 +1,21 @@
 .navbar{
     list-style-type: none;
     margin: .1;
+    padding: .2rem .4rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
 }
 
 .navbar li {
     padding: 0;
+}
+
+.title{
+    padding: .1rem;
+    margin: 0 .4rem 0 0;
+    background-color: rgb(75, 60, 51);
 }
 
 .navbar a{
