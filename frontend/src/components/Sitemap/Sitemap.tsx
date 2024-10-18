@@ -51,7 +51,7 @@ function Sitemap() {
 
   if(isLoading){
     return (
-      <p>Loading...</p>      
+      <p>Generating sitemap...</p>      
     );
   }
 
