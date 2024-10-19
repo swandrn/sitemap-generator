@@ -19,16 +19,16 @@
 }
 
 .navbar a{
-    background-color: rgb(75, 60, 51);
+    background-color: #4B3C33;
     color: #FAF3DD;
     padding: .3rem .4rem;
     text-decoration: none;
 }
 
 .navbar a:hover{
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }
 
 .navbar a:active{
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }

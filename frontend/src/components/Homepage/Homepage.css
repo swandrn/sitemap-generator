@@ -1,5 +1,5 @@
 .text-input {
-    background-color: rgb(75, 60, 51);
+    background-color: #4B3C33;
     color: #FAF3DD;
     box-sizing: border-box;
     border: 1px solid white;
@@ -8,15 +8,15 @@
 }
 
 .text-input:hover {
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }
 
 .text-input:focus {
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }
 
 .button {
-    background-color: rgb(75, 60, 51);
+    background-color: #4B3C33;
     color: #FAF3DD;
     border: none;
     text-decoration: none;
@@ -26,11 +26,11 @@
 }
 
 .button:hover {
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }
 
 .button:active {
-    background-color: rgb(85, 70, 61);
+    background-color: #5B4D45;
 }
 
 /* Checkbox */
@@ -54,26 +54,26 @@
     left: .05rem;
     height: 1.2rem;
     width: 1.2rem;
-    background: #e6e6e6;
+    background: #E6E6E6;
     outline: 1px solid black;
 }
 
 .control:hover input~.control__indicator,
 .control input:focus~.control__indicator {
-    background: #ccc;
+    background: #CCC;
 }
 
 .control input:checked~.control__indicator {
-    background: rgb(75, 60, 51);
+    background: #4B3C33;
 }
 
 .control:hover input:not([disabled]):checked~.control__indicator,
 .control input:checked:focus~.control__indicator {
-    background: rgb(85, 70, 61);
+    background: #5B4D45;
 }
 
 .control input:disabled~.control__indicator {
-    background: #e6e6e6;
+    background: #E6E6E6;
     opacity: 0.6;
     pointer-events: none;
 }
@@ -93,13 +93,13 @@
     top: .25rem;
     width: .2rem;
     height: .4rem;
-    border: solid #fff;
+    border: solid #FFFFFF;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
 
 .control--checkbox input:disabled~.control__indicator:after {
-    border-color: #7b7b7b;
+    border-color: #7B7B7B;
 }
 
 /* Form */
