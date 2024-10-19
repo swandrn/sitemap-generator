@@ -7,17 +7,17 @@
 
 /* Nodes */
 .node{
-  background-color: rgb(83, 86, 91);
+  background-color: #33424B;
   border-radius: 6px;
   padding: .2rem .4rem !important;
 }
 
 .node:hover{
-  background-color: rgb(111, 116, 126);
+  background-color: #45535B;
 }
 
 .node:active{
-  background-color: rgb(68, 58, 58);
+  background-color: #45535B;
 }
 
 .node a{
@@ -27,5 +27,20 @@
 
 
 .node-selected{
-  background-color: rgb(68, 58, 58);
+  background-color: #45535B;
+}
+
+/* Loading animation */
+.loader-animation{
+  border: .5rem  solid #B3ACA7;
+  border-top: .5rem solid #4B3C33;
+  border-radius: 50%;
+  width: 2vw;
+  height: 2vw;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
 }
