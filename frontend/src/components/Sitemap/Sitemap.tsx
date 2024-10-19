@@ -3,16 +3,23 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import './Sitemap.css';
 
-interface Node{
-  NodeId: {value: string, format: string}
-  ParentId: string
+interface Node {
+  NodeId: { value: string, format: string };
+  ParentId: string;
 }
 
 function sitemapToArr(sitemap: any): Node[][] {
-  let res: Node[][] = []
+  let res: Node[][] = [];
   for (let key in sitemap) {
-    sitemap[key] = sitemap[key] == null ? "" : sitemap[key]
-    let formattedKey = new URL(key).pathname
+    sitemap[key] = sitemap[key] == null ? "" : sitemap[key];
+    const urlObj: URL = new URL(key);
+    let formattedKey: string = urlObj.pathname == "/" ? urlObj.hostname : urlObj.pathname;
+    urlObj.searchParams.forEach(value => {
+      formattedKey = formattedKey.concat(`${value}/`);
+    })
+    if(formattedKey.length > 14){
+      formattedKey = formattedKey.substring(0, 11).concat('...');
+    }
     res.push([
       {
         'v': key,
@@ -29,7 +36,7 @@ function Sitemap() {
   const [isLoading, setLoading] = useState(true);
   let [searchParams, _] = useSearchParams();
   useEffect(() => {
-    if(isLoading){
+    if (isLoading) {
       let queryUrl: string = 'http://localhost:8080/generate/sitemap?';
       searchParams.forEach((value, key) => {
         queryUrl = queryUrl.concat(`${key}=${value}`);
@@ -41,7 +48,7 @@ function Sitemap() {
         }
       })
         .then(response => {
-          if(response.ok){
+          if (response.ok) {
             return response.json()
           }
           throw response;
@@ -50,13 +57,18 @@ function Sitemap() {
         .catch(error => console.log(error))
         .finally(() => {
           setLoading(false);
-        }) 
+        })
     }
   }, [])
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <p>Generating sitemap...</p>      
+      <div className="loading-wrapper">
+        <div className="loader-animation"></div>
+        <div className="loader-text">
+          <p>Generating sitemap...</p>
+        </div>
+      </div>
     );
   }
 
