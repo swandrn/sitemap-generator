@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     list-style-type: none;
     margin: .1;
     padding: .2rem .4rem;
@@ -12,23 +12,30 @@
     padding: 0;
 }
 
-.title{
+.title {
     padding: .1rem;
     margin: 0 .4rem 0 0;
     background-color: #FFDB58;
 }
 
-.navbar a{
-    background-color: #4B3C33;
-    color: #FAF3DD;
+.navbar a {
+    color: #4B3C33;
     padding: .3rem .4rem;
     text-decoration: none;
+    position: relative;
 }
 
-.navbar a:hover{
-    background-color: #5B4D45;
+.navbar a::before {
+    content: '';
+    position: absolute;
+    height: 2px;
+    width: 0px;
+    left: 0;
+    bottom: 0;
+    background: #4B3C33;
+    transition: all .5s ease;
 }
 
-.navbar a:active{
-    background-color: #5B4D45;
+.navbar a:hover:before {
+    width: 100%;
 }
